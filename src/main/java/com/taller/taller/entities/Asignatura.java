@@ -2,34 +2,44 @@ package com.taller.taller.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
-
-import java.util.Date;
+import jakarta.validation.constraints.*;
+import java.time.LocalDate;
 
 @Entity
-@Table(name="asignaturas")
+@Table(name = "asignaturas")
 public class Asignatura {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
-    @Size(max = 63, min = 2, message = "The long name employ is invalid")
+
+    @NotBlank(message = "El nombre no puede estar vacío.")
+    @Size(max = 63, min = 2, message = "El nombre debe tener entre 2 y 63 caracteres.")
     private String nombre;
 
-    @NotBlank
+    @NotBlank(message = "El código no puede estar vacío.")
+    @Size(max = 10, message = "El código debe tener como máximo 10 caracteres.")
     private String codigo;
 
-    @NotBlank
+    @Min(value = 1, message = "Los créditos deben ser al menos 1.")
+    @Max(value = 10, message = "Los créditos no pueden ser mayores a 10.")
     private int creditos;
 
-    @NotBlank
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date fecha;
-    public Asignatura() {
+    @NotNull(message = "La fecha no puede ser nula.")
+    @PastOrPresent(message = "La fecha debe ser hoy o una fecha pasada.")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fecha;
 
+    public Asignatura() {
     }
+
+    public Asignatura(String nombre, String codigo, int creditos, LocalDate fecha) {
+        this.nombre = nombre;
+        this.codigo = codigo;
+        this.creditos = creditos;
+        this.fecha = fecha;
+    }
+
+    // Getters y setters
 
     public Long getId() {
         return id;
@@ -63,11 +73,11 @@ public class Asignatura {
         this.creditos = creditos;
     }
 
-    public Date getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 }
